@@ -10,6 +10,8 @@ The analysis would be conducted according to the geographical region/verbal lang
 
 
 
+
+
 ## Typical tracks:
 
 **TWICE “I CAN’T STOP ME”**
@@ -35,7 +37,17 @@ It is an exclusive electronic and dance-pop music in Cantonese.
 
 
 
-# Analysis
+# Language as genre
+
+*Table 1: Danceability distribution in different languages*
+![language_danceability](https://user-images.githubusercontent.com/99733797/156937439-879ae119-58aa-48f7-a930-052ad7cf20fc.png)
+
+English has the highest medium of danceability among all genres, followed by Korean. Both Cantonese and Taiwanese have the even distribution of danceability between 0.4 and 0.8. Mandarin and Japanese have the lower medium of danceability among all genres. Overall, all the tracks are higher than 0.5, which symbolizes my tendency in listening music with high dancebility
+
+*Table 2: Tempo distribution in different languages*
+![language_tempo](https://user-images.githubusercontent.com/99733797/156937660-064b81ac-cf2a-4302-b588-e37087b6327b.png)
+
+Vice versa, the distribution in tempo shows an opposite pattern comparing to danceability, where English has the lowest medium, *exluding atypical tracks: Starboy, Blinding Lights (The Weeknd) and Stay (The Kid Laroi ft. Justin Bieber)*. 
 
 
 
@@ -49,8 +61,4 @@ It is an exclusive electronic and dance-pop music in Cantonese.
 
 
 
-
-
-
-This is A line I wrote on my local computer  
 
