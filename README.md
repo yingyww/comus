@@ -42,15 +42,23 @@ It is an exclusive electronic and dance-pop music in Cantonese.
 *Table 1: Danceability distribution in different languages*
 ![language_danceability](https://user-images.githubusercontent.com/99733797/156937439-879ae119-58aa-48f7-a930-052ad7cf20fc.png)
 
-English has the highest medium of danceability among all genres, followed by Korean. Both Cantonese and Taiwanese have the even distribution of danceability between 0.4 and 0.8. Mandarin and Japanese have the lower medium of danceability among all genres. Overall, all the tracks are higher than 0.5, which symbolizes my tendency in listening music with high dancebility
+English has the highest medium of danceability among all genres, followed by Korean. Both Cantonese and Taiwanese have the even distribution of danceability between 0.4 and 0.8. Mandarin and Japanese have the lower medium of danceability among all genres. Overall, all tracks are higher than 0.5, which symbolizes my tendency in listening music with high dancebility
 
 *Table 2: Tempo distribution in different languages*
 ![language_tempo](https://user-images.githubusercontent.com/99733797/156937660-064b81ac-cf2a-4302-b588-e37087b6327b.png)
 
-Vice versa, the distribution in tempo shows an opposite pattern comparing to danceability, where English has the lowest medium, *exluding atypical tracks: Starboy, Blinding Lights (The Weeknd) and Stay (The Kid Laroi ft. Justin Bieber)*. 
+Vice versa, the distribution in tempo shows an opposite pattern comparing to danceability, where English has the lowest medium, *exluding atypical tracks: Starboy, Blinding Lights (The Weeknd) and Stay (The Kid Laroi ft. Justin Bieber)*. Along with Cantonese, both distribution are the narrowest between 100 and 130 BPM. Japanese and Taiwanese have the highest medium of tempo at 150 BPM. Overall, most of the medium of tempo distribution locate around 125 BPM.
 
 
+# Chromagram 
 
+*Table 3: Chromagram of Blinding Light (The Weeknd)*
+![chromagram_blindinglight](https://user-images.githubusercontent.com/99733797/156939165-004055a3-0b49-483c-a208-244fbf694307.png)
+
+*Table 4: Chromagram of In Your Eyes (The Weeknd)*
+![chromagram_inyoureyes](https://user-images.githubusercontent.com/99733797/156939167-31192d59-458c-4c0c-b424-9e9a2865e242.png)
+
+Both tracks are part of the album "After Hours" by The Weeknd. 
 
 
 
