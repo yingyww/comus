@@ -1,5 +1,4 @@
 
-
 # Computational Musicology -- Zoe Wong
 
 In this course, I propose a computational analysis of my personal playlist on Spotify. My pocket playlist comprises disco, dance-pop, and sentimental ballads, which I have been accumulating since November 2020. The collection of these songs is solely influenced by my YouTube explore and radio shows. The size of my corpus is around 90 songs in the playlist from various genres, such as Korean, English, Mandarin, Cantonese, Taiwanese, and Japanese. The diversity of my favourites is inspirational to my project and I hope to understand the mechanism behind my choice.
