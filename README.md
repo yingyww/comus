@@ -52,17 +52,25 @@ Vice versa, the distribution in tempo shows an opposite pattern comparing to dan
 
 # Chromagram 
 
-*Table 3: Chromagram of Blinding Light (The Weeknd)*
+*Table 3: Chromagram of "Blinding Light" (The Weeknd)* planning to cut the x-axis for clearer insight
 ![chromagram_blindinglight](https://user-images.githubusercontent.com/99733797/156939165-004055a3-0b49-483c-a208-244fbf694307.png)
 
-*Table 4: Chromagram of In Your Eyes (The Weeknd)*
+*Table 4: Chromagram of "In Your Eyes" (The Weeknd)* planning to cut the x-axis for clearer insight
 ![chromagram_inyoureyes](https://user-images.githubusercontent.com/99733797/156939167-31192d59-458c-4c0c-b424-9e9a2865e242.png)
 
 Both tracks are part of the album "After Hours" by The Weeknd. 
 
+From *table 3*, we can see that F chord has a consistent pattern of its timbre feature in "Blinding Light". We might hardly recognize the chorus on the chromagram; however tracing back to the track, a strong rhythmic echo in F chord clearly stands out as the bass of the song. We can also see a cycle throughout the entire song, where F chord goes to C, then C# and keep circulating. 
 
+From *table 4*, the euclidean timbre features show the route of the bass, from G to C to F and back to G. It is relatively obvious compared to above, with many sudden change between chords, and it is not the chorus but the bass of the track. By comparing these 2 songs from the same artist, we can see that C and F chords often appear as the key timbre. 
 
+# Cepstogram
 
+*table 5: Pitch of "Blinding Light" (The Weeknd)*
+![blindinglight_pitcheuc](https://user-images.githubusercontent.com/99733797/156946391-83247296-6295-4775-8318-a99fcad82200.png)
+
+*table 5: Timbre of "Blinding Light" (The Weeknd)*
+![blindinglight_timbreman](https://user-images.githubusercontent.com/99733797/156946393-de47f5ea-72e6-4716-a887-da94f5b356ae.png)
 
 
 
