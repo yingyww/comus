@@ -74,7 +74,9 @@ From *table 4*, the euclidean timbre features show the route of the bass, from G
 
 From *table 5*, we can see that the pitch class of "Blinding Light" are consistent throughout the track. If we zoom into the section from 50 secs to around 90 secs, 110 secs to around 190 secs, the patterns are identicial, referring to the chorus of track. 
 
-From *table 6*, the sections (10-25 secs, 80-90 secs, 140-150 secs, 160-180 secs) in dark blue represents the chorus with solely instrumental music. Comparing to *table 5*, the dark blue area emphasizes the chorus without human voices. "Blinding Light" thus could be divided as two part (pre-chorus and chorus), and its pattern is 'chorus -> prechorus -> chorus -> prechorus -> chorus -> replaying chorus'.
+From *table 6*, the sections (10-25 secs, 80-90 secs, 140-150 secs, 160-180 secs) in dark blue represents the chorus with solely instrumental music. Comparing to *table 5*, the dark blue area emphasizes the chorus without human voices. Between 100-135 sec, a small diagonal line symbolizes the repetition of section between 50-75 sec, that we could identify as the verse and pre-chorus.
+
+"Blinding Light" thus could be divided as two divisions (verse+pre-chorus [A] and chorus [B]), and its pattern is 'BABABB'.
 
 
 
