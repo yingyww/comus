@@ -64,7 +64,7 @@ From *table 3*, we can see that F chord has a consistent pattern of its timbre f
 
 From *table 4*, the euclidean timbre features show the route of the bass, from G to C to F and back to G. It is relatively obvious compared to above, with many sudden change between chords, and it is not the chorus but the bass of the track. By comparing these 2 songs from the same artist, we can see that C and F chords often appear as the key timbre. 
 
-# Cepstogram
+# Self-Similarity Matrix of "Blinding Light"
 
 *table 5: Pitch of "Blinding Light" (The Weeknd)*
 ![blindinglight_pitcheuc](https://user-images.githubusercontent.com/99733797/156946391-83247296-6295-4775-8318-a99fcad82200.png)
