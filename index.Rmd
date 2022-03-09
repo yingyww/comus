@@ -1,7 +1,7 @@
 ---
-title: "Computational Musicology"
-author: "Zoe Wong"
-date: "2022"
+title: "Computational Musicology -- Zoe Wong"
+author: "zoe wong"
+date: "2022/3/2"
 output: 
   flexdashboard::flex_dashboard:
     storyboard: true
@@ -25,6 +25,19 @@ hello again test test
 ### Conclusion
 
 hello again
+hello
+
+***
+
+### Analysis
+
+
+
+***
+
+
+### Conclusion
+
 
 
 
