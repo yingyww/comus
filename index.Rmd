@@ -247,8 +247,8 @@ icsm <-
   )
 ```
 
-```{r, echo=FALSE}
-icsm %>%
+```{r, echo=FALSE, fig.show="hold", out.width="50%"}
+timbre_icsm <- icsm %>%
   compmus_self_similarity(timbre, "cosine") %>% 
   ggplot(
     aes(
@@ -265,8 +265,8 @@ icsm %>%
   theme_classic() +
   labs(x = "", y = "", title = "Timbre cepstogram of 'I can't stop me' [7]")
 ```
-```{r, echo=FALSE}
-icsm %>%
+```{r, echo=FALSE, fig.show="hold", out.width="50%"}
+pitches_icsm <- icsm %>%
   compmus_self_similarity(pitches, "cosine") %>% 
   ggplot(
     aes(
@@ -281,7 +281,7 @@ icsm %>%
   coord_fixed() +
   scale_fill_viridis_c(guide = "none") +
   theme_classic() +
-  labs(x = "", y = "", title = "Pitches cepstogram of 'I can't stop me' [8] ")
+  labs(x = "", y = "", title = "Pitches cepstogram of 'I can't stop me' [7]")
 ```
 
 ***
