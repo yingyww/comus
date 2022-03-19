@@ -12,7 +12,9 @@ library(ggplot2)
 library(plotly)
 library(tidyverse)
 library(spotifyr)
+```
 
+```{r, include=FALSE}
 canto <- get_playlist_audio_features("", "57WgAlUaNcdk6En5fD5IeZ")
 mandarin <- get_playlist_audio_features("", "05GSdBKp8ZZwlVA4czOFrM")
 korean <- get_playlist_audio_features("", "0tFjLsZ50AsfehSNdl6YOc")
@@ -39,7 +41,68 @@ inyoureyes <-
   unnest(segments) %>%
   select(start, duration, pitches)
 ```
+### Language as Genre: Tempo
 
+```{r, echo=FALSE}
+ tempo_category <- awards %>%
+  ggplot(aes(x = category, y = tempo, fill = category)) +
+  geom_boxplot(adjust=1.5, alpha=.5) + labs(title =
+  "Tempo distribution in different languages [2]") 
+
+ggplotly(tempo_category)
+```
+
+***
+*Table 2: Tempo distribution in different languages*
+
+Vice versa, the distribution in tempo shows an opposite pattern comparing to danceability, where English has the lowest medium, excluding atypical tracks: *Starboy, Blinding Lights* (The Weeknd) and *Stay* (The Kid Laroi ft. Justin Bieber). Along with Cantonese, both distribution are the narrowest between 100 and 130 BPM. **Taiwanese** has the highest medium of tempo at 150 BPM. Overall, most of the medium of tempo distribution locate **around 125 BPM**.
+
+
+
+### Tempogram
+
+```{r, include=FALSE}
+ moonlanding <-
+  get_tidy_audio_analysis("6TjQY7xF2BZpC0QOAG4vtu?si=8a550132c31e4900") %>%
+  select(segments) %>%
+  unnest(segments)
+takeonme <-
+   get_tidy_audio_analysis("2WfaOiMkCvy7F5fcp2zZ8L?si=b47733c29937471b") %>%
+  select(segments) %>%
+  unnest(segments)
+O.O <-
+   get_tidy_audio_analysis("3lrNsPdn98i6rxO142pLT6?si=0bf5176da3534b3a") %>%
+  select(segments) %>%
+  unnest(segments)
+ifi <-
+   get_tidy_audio_analysis("72OVnXDzugvrCU25lMi9au?si=b6ec65f6487c498b") %>%
+  select(segments) %>%
+  unnest(segments)
+
+```
+
+```{r, echo=FALSE, fig.show="hold", out.width="50%"}
+O.O <- 
+  get_tidy_audio_analysis("3lrNsPdn98i6rxO142pLT6?si=0bf5176da3534b3a") %>%
+  tempogram(window_size = 8, hop_size = 1, cyclic = TRUE) %>%
+  ggplot(aes(x = time, y = bpm, fill = power)) +
+  geom_raster() +
+  scale_fill_viridis_c(guide = "none") +
+  labs(x = "Time (s)", y = "Tempo (BPM)") +
+  theme_classic()
+O.O
+
+nextlevel <- 
+  get_tidy_audio_analysis("2zrhoHlFKxFTRF5aMyxMoQ?si=8e5fabfe220e49f9") %>%
+  tempogram(window_size = 8, hop_size = 1, cyclic = TRUE) %>%
+  ggplot(aes(x = time, y = bpm, fill = power)) +
+  geom_raster() +
+  scale_fill_viridis_c(guide = "none") +
+  labs(x = "Time (s)", y = "Tempo (BPM)") +
+  theme_classic()
+nextlevel
+
+```
 
 
 ### **Introduction**
@@ -47,7 +110,7 @@ inyoureyes <-
 
 In this course, I propose a computational analysis of my personal playlist on Spotify. My pocket playlist comprises **disco, dance-pop, and sentimental ballads**, which I have been accumulating since September 2020. These songs are looped or appeared in my pocket list at least for 2 weeks, which proves that they are my **favourites during my university life**.
 
-The collection of these songs is solely influenced by my YouTube explore, Spotify recommendations and radio shows. Since my background allows me to access different language-pop over the Asia, the playlist is composed round 90 songs from languages, such as **Korean, English, Mandarin, Cantonese, Taiwanese, and Japanese**. The diversity of my favourites is inspirational to my project and I hope to understand the mechanism behind my choice.
+The collection of these songs is solely influenced by my YouTube explore, Spotify recommendations and radio shows. Since my background allows me to access different language-pop over the Asia, the playlist is composed round 90 songs from languages, such as Korean, English, Mandarin, Cantonese, Taiwanese, and Japanese. The diversity of my favourites is inspirational to my project and I hope to understand the mechanism behind my choice.
 
 The analysis would be conducted according to the geographical region/verbal language of the playlist: **United States *(English)*, Korea *(Korean)*, Hong Kong *(Cantonese)*, Taiwan *(Mandarin/Taiwanese)* and Japan *(Japanese)*.** Each region has its distinctive features, such as: danceability, acousticness, valence and tempo; however, each connects each with the combination of its genre and languages, and this project aims to **evaluate their similarities and patterns**. Thus, in each category, both typical and unique tracks are selected, to represent or emphasize their typicality/atypicality.
 
@@ -152,20 +215,13 @@ ggplotly(key_category)
 ***
 *Table 4: Key distribution in different languages*
 
-The key of **C and C#/Db** have the highest counts of tracks in my playlist, which English composes most of them. The key of D#/Eb and E appear as the least count where Mandarin composes most of them. It also shows the key distribution between languages, such as **Korean has the evenest distribution.** (Taiwanese has too little data to evaluate?)
-
-
-
-
-
-
-
+The key of **C and C#/Db** have the highest counts of tracks in my playlist, which English composes most of them. The key of D#/Eb and E appear as the least count where Mandarin composes most of them. It also shows the key distribution between languages, such as **Korean has the evenest distribution.** 
 
 
 
 ### Comparison: Chroma features of The Weeknd
 
-```{r, echo=FALSE, fig.align='center'}
+```{r, echo=FALSE, fig.show="hold", out.width="50%"}
 
 bl <- blindinglight %>%
   mutate(pitches = map(pitches, compmus_normalise, "euclidean")) %>%
@@ -182,21 +238,8 @@ bl <- blindinglight %>%
   labs(x = "Time (s)", y = NULL, fill = "Magnitude", title = "Chromagram of 'Blinding light' by The Weeknd [5]") +
   theme_minimal() +
   scale_fill_viridis_c()
+bl
 
-ggplotly(bl)
-
-```
-
-***
-*Table 5: Chromagram of "Blinding Light" (The Weeknd)* 
-
-From table 5, we can see that **F key** has a consistent pattern of its timbre feature in "Blinding Light". We might hardly recognize the chorus on the chromagram; however tracing back to the track, a strong rhythmic echo in F key clearly stands out as the bass of the song. We can also see a cycle throughout the entire song, where F key goes to C, then C# and keep circulating.
-
-
-
-### Comparison: Chromagram features of "In Your Eyes"
-
-```{r, echo=FALSE, fig.align='center'}
 iyy <- inyoureyes %>%
   mutate(pitches = map(pitches, compmus_normalise, "euclidean")) %>%
   compmus_gather_chroma() %>% 
@@ -212,16 +255,21 @@ iyy <- inyoureyes %>%
   labs(x = "Time (s)", y = NULL, fill = "Magnitude", title = "Chromagram of 'In your eyes' by The Weeknd [6]") +
   theme_minimal() +
   scale_fill_viridis_c()
+iyy
 
-ggplotly(iyy)
 ```
 
 ***
+*Table 5: Chromagram of "Blinding Light" (The Weeknd)* 
+
+From table 5, we can see that **F key** has a consistent pattern of its timbre feature in "Blinding Light". We might hardly recognize the chorus on the chromagram; however tracing back to the track, a strong rhythmic echo in F key clearly stands out as the bass of the song. We can also see a cycle throughout the entire song, where F key goes to C, then C# and keep circulating.
+
 *Table 6: Chromagram of "In Your Eyes" (The Weeknd)* 
 
-From table 6, the euclidean timbre features show the **route of the bass, from G to C to F and back to G.** It is relatively obvious compared to above, with many sudden change between chords, and it is not the chorus but the bass of the track. By comparing these 2 songs from the same artist, we can see that **C and F chords** often appear as the key timbre.
+From table 6, the euclidean timbre features show the **route of the bass, from G to C to F and back to G.** It is relatively obvious compared to above, with many sudden change between chords, and it is not the chorus but the bass of the track.
 
-* Both tracks are part of the album "After Hours" by The Weeknd. However, I have no clue to put two ggplotly into one textbox (they would overlap or i cant scroll down). planning to put both table 5 and table 6 together for better comparison
+By comparing these 2 songs from the same artist, we can see that **C and F chords** often appear as the key timbre.
+
 
 
 ### Self-Similarity Matrix of "I Can't Stop me"
@@ -249,7 +297,9 @@ icsm <-
 
 ```{r, echo=FALSE, fig.show="hold", out.width="50%"}
 timbre_icsm <- icsm %>%
-  compmus_self_similarity(timbre, "cosine") %>% 
+  compmus_self_similarity(timbre, "cosine")
+
+timbre_icsm %>%
   ggplot(
     aes(
       x = xstart + xduration / 2,
@@ -264,10 +314,12 @@ timbre_icsm <- icsm %>%
   scale_fill_viridis_c(guide = "none") +
   theme_classic() +
   labs(x = "", y = "", title = "Timbre cepstogram of 'I can't stop me' [7]")
-```
-```{r, echo=FALSE, fig.show="hold", out.width="50%"}
+
+
 pitches_icsm <- icsm %>%
-  compmus_self_similarity(pitches, "cosine") %>% 
+  compmus_self_similarity(pitches, "cosine")
+
+pitches_icsm %>%
   ggplot(
     aes(
       x = xstart + xduration / 2,
@@ -281,7 +333,8 @@ pitches_icsm <- icsm %>%
   coord_fixed() +
   scale_fill_viridis_c(guide = "none") +
   theme_classic() +
-  labs(x = "", y = "", title = "Pitches cepstogram of 'I can't stop me' [7]")
+  labs(x = "", y = "", title = "Pitches cepstogram of 'I can't stop me' [8]")
+
 ```
 
 ***
@@ -289,7 +342,7 @@ pitches_icsm <- icsm %>%
 
 From table 7, it displays a few blue chequerboard and yellow outlines. Such as between 40-60 secs, 100-120 secs and 160-180 secs, the chequerboards are identicial, symbolizing the pre-chorus of track. The yellow grid lines appear when human voices exist; vice versa, such as 60-80 and 170-190 secs, these are the chorus with pure instrumental.
 
-*table 8: Pitches of "I Can't Stop Me" (Twice)*
+*Table 8: Pitches of "I Can't Stop Me" (Twice)*
 
 From table 8, we can see that the pitch class of "I Can't Stop Me" are consistent throughout the track, with densed diagonal lines. The yellow grid lines clearly divide the track into parts. If we zoom into 0-5 secs, 35-40 secs, 75 secs, 100 secs, 140-150 secs and 190-200 secs, these are the moments/periods where pitches transpose. 
 
@@ -404,7 +457,7 @@ yoru <-
 ```
 
 ```{r, echo=FALSE}
-yoru %>% 
+yoru_graph <- yoru %>% 
   compmus_match_pitch_template(
     key_templates,         # Change to chord_templates if descired
     method = "cosine",  # Try different distance metrics
@@ -416,11 +469,13 @@ yoru %>%
   geom_tile() +
   scale_fill_viridis_c(guide = "none") +
   theme_minimal() +
-  labs(x = "Time (s)", y = "", title = "[8] Chordogram of 'Yoru ni kakeru (Run to the night)' by YOASOBI")
+  labs(x = "Time (s)", y = "", title = "[9] Chordogram of 'Yoru ni kakeru (Run to the night)' by YOASOBI")
+
+ggplotly(yoru_graph)
 ```
 
 ***
-*Table 8: Chordogram of "Yoru ni kakeru 夜に駆ける " (Run to the night)*
+*Table 9: Chordogram of "Yoru ni kakeru 夜に駆ける " (Run to the night)*
 
 We can see two obvious yellow vertical lines at 15-30 and 105-120 secs, these are the chorus without human voices. If we zoom into the bridge between 195-205 secs,we can see that few of the blue boxes transpose to Bmin/Dmaj/F#min/Amaj while two of yellow boxes transpose to Ebmaj/Abmaj. According to the track, the bridge and ending chorus have transposed to a higher key. It might nor clearly state in the chordogram, but we can see the blue box transpose from C minor to Cmaj/Amin/Fmaj/Dmin (actually the track reaches A minor).
 
@@ -478,7 +533,5 @@ english_korean %>%
     alpha = "Volume (dBFS)"
   )
 ```
-
-
 
 
