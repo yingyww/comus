@@ -61,26 +61,6 @@ Vice versa, the distribution in tempo shows an opposite pattern comparing to dan
 
 ### Tempogram
 
-```{r, include=FALSE}
- moonlanding <-
-  get_tidy_audio_analysis("6TjQY7xF2BZpC0QOAG4vtu?si=8a550132c31e4900") %>%
-  select(segments) %>%
-  unnest(segments)
-takeonme <-
-   get_tidy_audio_analysis("2WfaOiMkCvy7F5fcp2zZ8L?si=b47733c29937471b") %>%
-  select(segments) %>%
-  unnest(segments)
-O.O <-
-   get_tidy_audio_analysis("3lrNsPdn98i6rxO142pLT6?si=0bf5176da3534b3a") %>%
-  select(segments) %>%
-  unnest(segments)
-ifi <-
-   get_tidy_audio_analysis("72OVnXDzugvrCU25lMi9au?si=b6ec65f6487c498b") %>%
-  select(segments) %>%
-  unnest(segments)
-
-```
-
 ```{r, echo=FALSE, fig.show="hold", out.width="50%"}
 O.O <- 
   get_tidy_audio_analysis("3lrNsPdn98i6rxO142pLT6?si=0bf5176da3534b3a") %>%
@@ -88,7 +68,7 @@ O.O <-
   ggplot(aes(x = time, y = bpm, fill = power)) +
   geom_raster() +
   scale_fill_viridis_c(guide = "none") +
-  labs(x = "Time (s)", y = "Tempo (BPM)") +
+  labs(x = "Time (s)", y = "Tempo (BPM)", title = "Tempogram of 'O.O' by NMIXX [11]") +
   theme_classic()
 O.O
 
@@ -98,11 +78,22 @@ nextlevel <-
   ggplot(aes(x = time, y = bpm, fill = power)) +
   geom_raster() +
   scale_fill_viridis_c(guide = "none") +
-  labs(x = "Time (s)", y = "Tempo (BPM)") +
+  labs(x = "Time (s)", y = "Tempo (BPM)", title = "Tempogram of 'Next Level' by Aespa [12]") +
   theme_classic()
 nextlevel
 
 ```
+***
+*Table 11: Tempogram of "O.O" by NMIXX*
+*Table 12: Tempogram of "Next Level" by Aespa*
+
+Both tracks are K-pop and belongs to joint-tracks, which refers to that two or more styles of music/chorus/verses are combined into one track. "O.O" and "Aespa" are the recent joint-tracks, where their structures are constructed by two or more verses. 
+
+From table 11, we can see the tempo at the beginning revolves around 125-135 BPM, followed by sudden drop to around 105 BPM, and keeps accelerating to 135 BPM. The first verse enters around 35-40 secs and stay constant until 70 secs. The second verse enters then at 100 BPM and stay until 110 secs. Between 120-140 secs, the tempo level jumps between 100 BPM and around 145 BPM, which can conclude as the bridge (the track guides the audience back to the original verse). After the emerging bridge, it return back to the tempo level in the first verse, and continues till the end. We can see a clear pattern of how the track jumps between verses, proving that it is a joint-track with distinctive tempo.
+
+
+
+
 
 
 ### **Introduction**
@@ -297,9 +288,7 @@ icsm <-
 
 ```{r, echo=FALSE, fig.show="hold", out.width="50%"}
 timbre_icsm <- icsm %>%
-  compmus_self_similarity(timbre, "cosine")
-
-timbre_icsm %>%
+  compmus_self_similarity(timbre, "cosine") %>%
   ggplot(
     aes(
       x = xstart + xduration / 2,
@@ -314,12 +303,11 @@ timbre_icsm %>%
   scale_fill_viridis_c(guide = "none") +
   theme_classic() +
   labs(x = "", y = "", title = "Timbre cepstogram of 'I can't stop me' [7]")
+timbre_icsm
 
 
 pitches_icsm <- icsm %>%
-  compmus_self_similarity(pitches, "cosine")
-
-pitches_icsm %>%
+  compmus_self_similarity(pitches, "cosine") %>%
   ggplot(
     aes(
       x = xstart + xduration / 2,
@@ -334,7 +322,7 @@ pitches_icsm %>%
   scale_fill_viridis_c(guide = "none") +
   theme_classic() +
   labs(x = "", y = "", title = "Pitches cepstogram of 'I can't stop me' [8]")
-
+ pitches_icsm
 ```
 
 ***
