@@ -63,24 +63,28 @@ Vice versa, the distribution in tempo shows an opposite pattern comparing to dan
 
 ```{r, echo=FALSE, fig.show="hold", out.width="50%"}
 O.O <- 
-  get_tidy_audio_analysis("3lrNsPdn98i6rxO142pLT6?si=0bf5176da3534b3a") %>%
+  get_tidy_audio_analysis("3lrNsPdn98i6rxO142pLT6?si=0bf5176da3534b3a")
+
+O.O %>%
   tempogram(window_size = 8, hop_size = 1, cyclic = TRUE) %>%
   ggplot(aes(x = time, y = bpm, fill = power)) +
   geom_raster() +
   scale_fill_viridis_c(guide = "none") +
   labs(x = "Time (s)", y = "Tempo (BPM)", title = "Tempogram of 'O.O' by NMIXX [11]") +
   theme_classic()
-O.O
+
 
 nextlevel <- 
-  get_tidy_audio_analysis("2zrhoHlFKxFTRF5aMyxMoQ?si=8e5fabfe220e49f9") %>%
+  get_tidy_audio_analysis("2zrhoHlFKxFTRF5aMyxMoQ?si=8e5fabfe220e49f9")
+
+nextlevel %>%
   tempogram(window_size = 8, hop_size = 1, cyclic = TRUE) %>%
   ggplot(aes(x = time, y = bpm, fill = power)) +
   geom_raster() +
   scale_fill_viridis_c(guide = "none") +
   labs(x = "Time (s)", y = "Tempo (BPM)", title = "Tempogram of 'Next Level' by Aespa [12]") +
   theme_classic()
-nextlevel
+
 
 ```
 
@@ -139,22 +143,6 @@ ggplotly(danceability_category)
 **English** has the highest medium of danceability among all genres, followed by Korean. Both Cantonese and Taiwanese have the even distribution of danceability between 0.4 and 0.8. Mandarin and Japanese have the lower medium of danceability among all genres. Overall, all tracks are higher than 0.5, which symbolizes my tendency in listening music with **high dancebility**
 
 
-
-### Language as Genre: Tempo
-
-```{r, echo=FALSE}
- tempo_category <- awards %>%
-  ggplot(aes(x = category, y = tempo, fill = category)) +
-  geom_boxplot(adjust=1.5, alpha=.5) + labs(title =
-  "Tempo distribution in different languages [2]") 
-
-ggplotly(tempo_category)
-```
-
-***
-*Table 2: Tempo distribution in different languages*
-
-Vice versa, the distribution in tempo shows an opposite pattern comparing to danceability, where English has the lowest medium, excluding atypical tracks: *Starboy, Blinding Lights* (The Weeknd) and *Stay* (The Kid Laroi ft. Justin Bieber). Along with Cantonese, both distribution are the narrowest between 100 and 130 BPM. **Taiwanese** has the highest medium of tempo at 150 BPM. Overall, most of the medium of tempo distribution locate **around 125 BPM**.
 
 
 
@@ -217,8 +205,7 @@ The key of **C and C#/Db** have the highest counts of tracks in my playlist, whi
 ### Comparison: Chroma features of The Weeknd
 
 ```{r, echo=FALSE, fig.show="hold", out.width="50%"}
-
-bl <- blindinglight %>%
+blindinglight %>%
   mutate(pitches = map(pitches, compmus_normalise, "euclidean")) %>%
   compmus_gather_chroma() %>% 
   ggplot(
@@ -233,9 +220,8 @@ bl <- blindinglight %>%
   labs(x = "Time (s)", y = NULL, fill = "Magnitude", title = "Chromagram of 'Blinding light' by The Weeknd [5]") +
   theme_minimal() +
   scale_fill_viridis_c()
-bl
 
-iyy <- inyoureyes %>%
+inyoureyes %>%
   mutate(pitches = map(pitches, compmus_normalise, "euclidean")) %>%
   compmus_gather_chroma() %>% 
   ggplot(
@@ -250,7 +236,7 @@ iyy <- inyoureyes %>%
   labs(x = "Time (s)", y = NULL, fill = "Magnitude", title = "Chromagram of 'In your eyes' by The Weeknd [6]") +
   theme_minimal() +
   scale_fill_viridis_c()
-iyy
+
 
 ```
 
