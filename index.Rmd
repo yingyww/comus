@@ -12,6 +12,25 @@ library(ggplot2)
 library(plotly)
 library(tidyverse)
 library(spotifyr)
+library(tidymodels)
+library(ggdendro)
+library(heatmaply)
+
+get_conf_mat <- function(fit) {
+  outcome <- .get_tune_outcome_names(fit)
+  fit %>% 
+    collect_predictions() %>% 
+    conf_mat(truth = outcome, estimate = .pred_class)
+}  
+
+get_pr <- function(fit) {
+  fit %>% 
+    conf_mat_resampled() %>% 
+    group_by(Prediction) %>% mutate(precision = Freq / sum(Freq)) %>% 
+    group_by(Truth) %>% mutate(recall = Freq / sum(Freq)) %>% 
+    ungroup() %>% filter(Prediction == Truth) %>% 
+    select(class = Prediction, precision, recall)
+}  
 ```
 
 ```{r, include=FALSE}
@@ -41,65 +60,79 @@ inyoureyes <-
   unnest(segments) %>%
   select(start, duration, pitches)
 ```
-### Language as Genre: Tempo
 
-```{r, echo=FALSE}
- tempo_category <- awards %>%
-  ggplot(aes(x = category, y = tempo, fill = category)) +
-  geom_boxplot(adjust=1.5, alpha=.5) + labs(title =
-  "Tempo distribution in different languages [2]") 
-
-ggplotly(tempo_category)
+### Dendrogram
+```{r, include=FALSE} 
+koreandd <-
+  get_playlist_audio_features("", "2zYOiaRahIUZd0YjzCIJ1S") %>%
+  add_audio_analysis() %>%
+  mutate(
+    segments = map2(segments, key, compmus_c_transpose),
+    pitches =
+      map(segments,
+        compmus_summarise, pitches,
+        method = "mean", norm = "manhattan"
+      ),
+    timbre =
+      map(
+        segments,
+        compmus_summarise, timbre,
+        method = "mean"
+      )
+  ) %>%
+  mutate(pitches = map(pitches, compmus_normalise, "clr")) %>%
+  mutate_at(vars(pitches, timbre), map, bind_rows) %>%
+  unnest(cols = c(pitches, timbre))
 ```
 
-***
-*Table 2: Tempo distribution in different languages*
-
-Vice versa, the distribution in tempo shows an opposite pattern comparing to danceability, where English has the lowest medium, excluding atypical tracks: *Starboy, Blinding Lights* (The Weeknd) and *Stay* (The Kid Laroi ft. Justin Bieber). Along with Cantonese, both distribution are the narrowest between 100 and 130 BPM. **Taiwanese** has the highest medium of tempo at 150 BPM. Overall, most of the medium of tempo distribution locate **around 125 BPM**.
-
-
-
-### Tempogram
-
-```{r, echo=FALSE, fig.show="hold", out.width="50%"}
-O.O <- 
-  get_tidy_audio_analysis("3lrNsPdn98i6rxO142pLT6?si=0bf5176da3534b3a")
-
-O.O %>%
-  tempogram(window_size = 8, hop_size = 1, cyclic = TRUE) %>%
-  ggplot(aes(x = time, y = bpm, fill = power)) +
-  geom_raster() +
-  scale_fill_viridis_c(guide = "none") +
-  labs(x = "Time (s)", y = "Tempo (BPM)", title = "Tempogram of 'O.O' by NMIXX [11]") +
-  theme_classic()
-
-
-nextlevel <- 
-  get_tidy_audio_analysis("2zrhoHlFKxFTRF5aMyxMoQ?si=8e5fabfe220e49f9")
-
-nextlevel %>%
-  tempogram(window_size = 8, hop_size = 1, cyclic = TRUE) %>%
-  ggplot(aes(x = time, y = bpm, fill = power)) +
-  geom_raster() +
-  scale_fill_viridis_c(guide = "none") +
-  labs(x = "Time (s)", y = "Tempo (BPM)", title = "Tempogram of 'Next Level' by Aespa [12]") +
-  theme_classic()
-
-
+```{r}
+koreandd_juice <-
+  recipe(
+    track.name ~
+      danceability +
+      energy +
+      loudness +
+      speechiness +
+      acousticness +
+      liveness +
+      valence +
+      tempo +
+      duration,
+    data = koreandd
+  ) %>%
+  step_center(all_predictors()) %>%
+  step_scale(all_predictors()) %>% 
+  # step_range(all_predictors()) %>% 
+  prep(koreandd %>% mutate(track.name = str_trunc(track.name, 20))) %>%
+  juice() %>%
+  column_to_rownames("track.name")
 ```
 
+```{r}
+koreandd_dist <- dist(koreandd_juice, method = "euclidean")
+```
+
+```{r}
+heatmaply(
+  koreandd_juice,
+  hclustfun = hclust,
+  hclust_method = "complete",  # Change for single, average, or complete linkage.
+  dist_method = "euclidean",
+  main = "Dendrogram of significant tracks from language-based genre [13]"
+)
+```
+*Table 13: Dendrogram of significant tracks from language-based genre*
+
 ***
 
+In order to find the similarity between each language-based genre, I select two typical tracks from each pop in terms of Spotify API features. There are some conditions when making selection within each pop:
+(1) most of the API values lie on interquartile range (between Q1-Q3);
+(2) they have sufficient track popularity (~50 or above);
+(3) they comply with the dominating music genre within their language corpus
 
-*Table 11: Tempogram of "O.O" by NMIXX*
+Thus, these selected tracks are able to represent their genres in order to achieve better comparison between each category. 
 
-*Table 12: Tempogram of "Next Level" by Aespa*
-
-Both tracks are K-pop and belongs to joint-tracks, which refers to that two or more styles of music/chorus/verses are combined into one track. "O.O" and "Aespa" are the recent joint-tracks, where their structures are constructed by two or more verses. 
-
-From table 11, we can see the tempo at the beginning revolves around 125-135 BPM, followed by sudden drop to around 105 BPM, and keeps accelerating to 135 BPM. The first verse enters around 35-40 secs and stay constant until 70 secs. The second verse enters then at 100 BPM and stay until 110 secs. Between 120-140 secs, the tempo level jumps between 100 BPM and around 145 BPM, which can conclude as the bridge (the track guides the audience back to the original verse). After the emerging bridge, it return back to the tempo level in the first verse, and continues till the end. We can see a clear pattern of how the track jumps between verses, proving that it is a joint-track with distinctive tempo.
-
-
+From table 3, the dendrogram presents the magnitude of the Spotify API features (neglecting key and instrumentalness) and their clusters, 
 
 
 
@@ -114,13 +147,14 @@ The collection of these songs is solely influenced by my YouTube explore, Spotif
 The analysis would be conducted according to the geographical region/verbal language of the playlist: **United States *(English)*, Korea *(Korean)*, Hong Kong *(Cantonese)*, Taiwan *(Mandarin/Taiwanese)* and Japan *(Japanese)*.** Each region has its distinctive features, such as: danceability, acousticness, valence and tempo; however, each connects each with the combination of its genre and languages, and this project aims to **evaluate their similarities and patterns**. Thus, in each category, both typical and unique tracks are selected, to represent or emphasize their typicality/atypicality.
 
 
-***
+*Notes:
+The written words of Cantonese, Mandarin and Taiwanese are all based on Chinese, in three accents/dialects. In this corpus, I will only focus on Mando-pop in Taiwan*
+
+
+**** 
 
 <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/5Icv4PceG8IB7AiPqSJmNR?utm_source=generator" width="100%" height="380" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
 
-Notes:
-
-The written words of Cantonese, Mandarin and Taiwanese are all based on Chinese, in different accents.
 
 
   
@@ -130,7 +164,7 @@ The written words of Cantonese, Mandarin and Taiwanese are all based on Chinese,
 ```{r, echo=FALSE, fig.align ='center'}
 danceability_category <- awards %>%
   ggplot(aes(x = category, y = danceability, fill = category)) +
-  geom_violin(adjust=1.5, alpha=.5) + labs(title =
+  geom_violin(adjust=1.5, alpha=.5) + geom_jitter(color="black", size=0.4, alpha=0.9) + labs(title =
   "Danceability distribution in different languages [1]")
 
 ggplotly(danceability_category)
@@ -141,6 +175,23 @@ ggplotly(danceability_category)
 *Table 1: Danceability distribution in different languages*
 
 **English** has the highest medium of danceability among all genres, followed by Korean. Both Cantonese and Taiwanese have the even distribution of danceability between 0.4 and 0.8. Mandarin and Japanese have the lower medium of danceability among all genres. Overall, all tracks are higher than 0.5, which symbolizes my tendency in listening music with **high dancebility**
+
+### Language as Genre: **Tempo**
+
+
+```{r, echo=FALSE}
+ tempo_category <- awards %>%
+  ggplot(aes(x = category, y = tempo, fill = category)) +
+  geom_boxplot(adjust=1.5, alpha=.5) + labs(title =
+  "Tempo distribution in different languages [2]") 
+
+ggplotly(tempo_category)
+```
+
+***
+*Table 2: Tempo distribution in different languages*
+
+Vice versa, the distribution in tempo shows an opposite pattern comparing to danceability, where English has the lowest medium, excluding atypical tracks: *Starboy, Blinding Lights* (The Weeknd) and *Stay* (The Kid Laroi ft. Justin Bieber). Along with Cantonese, both distribution are the narrowest between 100 and 130 BPM. **Taiwanese** has the highest medium of tempo at 150 BPM. Overall, most of the medium of tempo distribution locate **around 125 BPM**.
 
 
 
@@ -458,58 +509,48 @@ ggplotly(yoru_graph)
 We can see two obvious yellow vertical lines at 15-30 and 105-120 secs, these are the chorus without human voices. If we zoom into the bridge between 195-205 secs,we can see that few of the blue boxes transpose to Bmin/Dmaj/F#min/Amaj while two of yellow boxes transpose to Ebmaj/Abmaj. According to the track, the bridge and ending chorus have transposed to a higher key. It might nor clearly state in the chordogram, but we can see the blue box transpose from C minor to Cmaj/Amin/Fmaj/Dmin (actually the track reaches A minor).
 
 
-### Standard deviation
 
-```{r, include=FALSE}
-englishsd <-
-  get_playlist_audio_features("thesoundsofspotify", "1tFMVzk46FL7SKkNvDftFh") %>%
-  slice(1:30) %>%
-  add_audio_analysis()
 
-koreansd <-
-  get_playlist_audio_features("thesoundsofspotify", 
-    "0tFjLsZ50AsfehSNdl6YOc"
-  ) %>%
-  slice(1:30) %>%
-  add_audio_analysis()
+### Tempogram
 
-english_korean <-
-  englishsd %>%
-  mutate(genre = "English") %>%
-  bind_rows(koreansd %>% mutate(genre = "Korean"))
+```{r, echo=FALSE, fig.show="hold", out.width="50%"}
+O.O <- 
+  get_tidy_audio_analysis("3lrNsPdn98i6rxO142pLT6?si=0bf5176da3534b3a")
+
+O.O %>%
+  tempogram(window_size = 8, hop_size = 1, cyclic = TRUE) %>%
+  ggplot(aes(x = time, y = bpm, fill = power)) +
+  geom_raster() +
+  scale_fill_viridis_c(guide = "none") +
+  labs(x = "Time (s)", y = "Tempo (BPM)", title = "Tempogram of 'O.O' by NMIXX [11]") +
+  theme_classic()
+
+
+nextlevel <- 
+  get_tidy_audio_analysis("2zrhoHlFKxFTRF5aMyxMoQ?si=8e5fabfe220e49f9")
+
+nextlevel %>%
+  tempogram(window_size = 8, hop_size = 1, cyclic = TRUE) %>%
+  ggplot(aes(x = time, y = bpm, fill = power)) +
+  geom_raster() +
+  scale_fill_viridis_c(guide = "none") +
+  labs(x = "Time (s)", y = "Tempo (BPM)", title = "Tempogram of 'Next Level' by Aespa [12]") +
+  theme_classic()
+
+
 ```
 
-```{r, echo=FALSE}
-english_korean %>%
-  mutate(
-    sections =
-      map(
-        sections,                                    # sections or segments
-        summarise_at,
-        vars(tempo, loudness, duration),             # features of interest
-        list(section_mean = mean, section_sd = sd)   # aggregation functions
-      )
-  ) %>%
-  unnest(sections) %>%
-  ggplot(
-    aes(
-      x = tempo,
-      y = tempo_section_sd,
-      colour = genre,
-      alpha = loudness
-    )
-  ) +
-  geom_point(aes(size = duration / 60)) +
-  geom_rug() +
-  theme_minimal() +
-  ylim(0, 2) +
-  labs(
-    x = "Mean Tempo (bpm)",
-    y = "SD Tempo",
-    colour = "Genre",
-    size = "Duration (min)",
-    alpha = "Volume (dBFS)"
-  )
-```
+***
 
 
+*Table 11: Tempogram of "O.O" by NMIXX*
+
+*Table 12: Tempogram of "Next Level" by Aespa*
+
+**Both tracks are K-pop and belongs to joint-tracks, which refers to that two or more styles of music/chorus/verses are combined into one track. "O.O" and "Aespa" are two of the recent joint-tracks I really addicted to, where their structures are constructed by two or more verses.** 
+
+From table 11, we can see the tempo at the beginning revolves around 125-135 BPM, followed by sudden drop to around 105 BPM, and keeps accelerating to 135 BPM. The first verse enters around 35-40 secs and stay constant until 70 secs. The second verse enters then at 100 BPM and stay until 110 secs. Between 120-140 secs, the tempo level jumps between 100 BPM and around 145 BPM, which can conclude as the bridge (the track guides the audience back to the original verse). After the emerging bridge, it return back to the tempo level in the first verse, and continues till the end. We can see a clear pattern of how the track jumps between verses, proving that it is a joint-track with distinctive tempo.
+
+From table 12, the tempo starts at 110 BPM and stay constant until around 110 sec. Then, the yellow lines separate into two: around 90 BPM and around 140 BPM. It can be explained by the corresponding tempo of two timbre feature: the line at 90 BPM is relatively vivid as it represents the bass instrument of the verse; the line at 140 BPM is lighter as it represents another supporting instrument (acting as to accelerate to climax). Around 160 secs, the tempo joins together at around 110 BPM, symbolizing the return of the first section/verse. Similar to table 11, the tempogram clearly divide the track into three parts [ABA].
+
+However, if we look closely to table 12, it delivers a more precise structure
