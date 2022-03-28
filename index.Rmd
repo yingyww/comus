@@ -71,7 +71,7 @@ koreandd <-
     pitches =
       map(segments,
         compmus_summarise, pitches,
-        method = "mean", norm = "manhattan"
+        method = "mean", norm = "euclidean"
       ),
     timbre =
       map(
@@ -132,9 +132,17 @@ In order to find the similarity between each language-based genre, I select two 
 
 Thus, these selected tracks are able to represent their genres in order to achieve better comparison between each category. 
 
-From table 3, the dendrogram presents the magnitude of the Spotify API features (neglecting key and instrumentalness) and their clusters, 
+(I am still discovering ways to show better presentation in terms of language pop, as the track name of each songs are in their own languages and it is really inconvenient for English or non-Asian viewers)
 
+From table 3, the dendrogram presents the magnitude of the Spotify API features (neglecting key and instrumentalness) and their clusters:
 
+The audio feature of "Only You(Taiwanese)[12th]" are the outermost from other tracks, where the numeral value or the colour goes relatively extreme, such as the dark blue areas of loudness and energy and the yellow areas of duration and acousticness. 
+
+However, it cannot represent Taiwanese as the outlining genre. Another Taiwanese track, "Love is Great(Taiwanese)[7]" and its cluster with "See you soon(Cantonese)[8th]" has the second-high similarities, while the cluster of "MAGO (Korean)[9th]" and "Moonlanding (Mandarin)[10th]" has the highest similarity in Spotify API features.
+
+"Levitating(English)[3rd]", "Run to the night(Japanese)[4th]","Dancing Feet(English)[1st]" and "Savage(Korean)[2nd] are categorized into one cluster and relatively heterogeneous with other tracks excluding "Only You(Taiwanese)[12th]".
+
+**We can conclude that these tracks are inter-correlating with each language pop. To a large extent, most tracks result a higher(yellowish) value in loudness, energy, valence and danceability, and a lower(darker value) in liveness and acousticness.**
 
 
 ### **Introduction**
@@ -180,7 +188,7 @@ ggplotly(danceability_category)
 
 
 ```{r, echo=FALSE}
- tempo_category <- awards %>%
+tempo_category <- awards %>%
   ggplot(aes(x = category, y = tempo, fill = category)) +
   geom_boxplot(adjust=1.5, alpha=.5) + labs(title =
   "Tempo distribution in different languages [2]") 
@@ -239,6 +247,8 @@ key_template <-
 )
 
 key_category <- awards %>%
+  mutate(
+  ) %>%
   ggplot(aes(x = key, fill = category)) +
   geom_histogram(binwidth = 0.5, adjust=1.5, alpha=.5) + labs(title =
   "Key distribution in different languages [4]")
