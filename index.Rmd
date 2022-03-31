@@ -121,7 +121,7 @@ heatmaply(
   main = "Dendrogram of significant tracks from language-based genre [13]"
 )
 ```
-*Table 13: Dendrogram of significant tracks from language-based genre*
+*Table 13: Dendrogram of significant tracks from language-based genre*;
 
 ***
 
